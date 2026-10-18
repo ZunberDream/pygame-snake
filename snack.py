@@ -13,6 +13,7 @@ food_coords = (random.randint(50, 750), random.randint(50, 550))
 snack_speed = 5
 direction = (1, 0)
 score = 0
+danger_coords = []
 
 game_running = True
 while game_running:
@@ -41,6 +42,11 @@ while game_running:
         snack_head = (snack_head[0], 600)
     if(snack_head[1] > 600):
         snack_head = (snack_head[0], 0)
+
+    for i, segment in enumerate(danger_coords):
+        pygame.draw.rect(screen, (240, 240, 240), (segment[0], segment[1], 30, 30))
+        if(segment[0] + 30 > snack_head[0] - 7.5 and segment[0] < snack_head[0] + 7.5 and segment[1] + 30 > snack_head[1] - 7.5 and segment[1] < snack_head[1] + 7.5):
+            game_running = False
     
     snack_coords.insert(0, snack_head)
     for i, segment in enumerate(snack_coords):
@@ -58,7 +64,11 @@ while game_running:
 
     score_text = font.render(f"Score: {score}", True, (255, 255, 255))
     screen.blit(score_text, (10, 10))
-    
+
+    if(random.randint(1, 1000) == 1):
+        danger_coords.append((random.randint(50, 750), random.randint(50, 550)))
+        print("新陷阱:", danger_coords[-1], "蛇头:", snack_coords[0])
+
     pygame.display.flip()
     clock.tick(60)
 
