@@ -6,11 +6,13 @@ pygame.init()
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("贪吃蛇")
 clock = pygame.time.Clock()
+font = pygame.font.Font(None, 36)
 
 snack_coords = [(400, 300)]
 food_coords = (random.randint(50, 750), random.randint(50, 550))
 snack_speed = 5
 direction = (1, 0)
+score = 0
 
 game_running = True
 while game_running:
@@ -23,7 +25,7 @@ while game_running:
                 direction = (0, -1)
             elif event.key == pygame.K_DOWN and direction != (0, -1):
                 direction = (0, 1)
-            elif event.key == pygame.K_LEFT:
+            elif event.key == pygame.K_LEFT and direction != (1, 0):
                 direction = (-1, 0)
             elif event.key == pygame.K_RIGHT and direction != (-1, 0):
                 direction = (1, 0)
@@ -43,13 +45,19 @@ while game_running:
     snack_coords.insert(0, snack_head)
     for i, segment in enumerate(snack_coords):
         pygame.draw.circle(screen, (0, 255, 0), segment, 15)
+        if(segment[0] + 7.5 > snack_head[0] - 7.5 and segment[0] - 7.5 < snack_head[0] + 7.5 and segment[1] + 7.5 > snack_head[1] - 7.5 and segment[1] - 7.5 < snack_head[1] + 7.5 and i >= 7):
+            game_running = False
 
     if(snack_head[0] + 7.5 > food_coords[0] - 10 and snack_head[0] - 7.5 < food_coords[0] + 10 and snack_head[1] + 7.5 > food_coords[1] - 10 and snack_head[1] - 7.5 < food_coords[1] + 10):
         food_coords = (random.randint(50, 750), random.randint(50, 550))
+        score += 1
     else:
         snack_coords.pop()
 
     pygame.draw.circle(screen, ((255, 0, 0)), food_coords, 10)
+
+    score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+    screen.blit(score_text, (10, 10))
     
     pygame.display.flip()
     clock.tick(60)
